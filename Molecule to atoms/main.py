@@ -36,7 +36,13 @@ def to_ints(it):  # returns Counter
             result.append(i[0])
     return Counter(result)
 
+def stripe_and_count(chunk):  # e.g "[CO2]2" => ("CO2", "2")
+    return pat_subitems.findall(chunk)[0]
+
+
 if __name__ == "__main__":
+    print(stripe_and_count("[ON(SO3)]2"))
+
     TEST_STRING = "K4[ON(SO3)2]2"
 
     assert dict(elems("K4K[ON(SO3)2]2")) == {"K":5}
