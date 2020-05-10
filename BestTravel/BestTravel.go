@@ -1,60 +1,42 @@
 package besttravel
 
 // ChooseBestSum solves Best Travel 5 kyu cata
-func ChooseBestSum(maxDist, maxTowns int, ls []int) int {
-	permutations := make([][]int, 0)
-	getPermutations(maxTowns, ls, &permutations, []int{})
-
-	best := 0
-	for i := 0; i != len(permutations); i++ {
-		if len(permutations[i]) < maxTowns {
-			continue
-		}
-		if sum := sumArr(permutations[i]); sum > best && sum <= maxDist {
-			best = sum
-		}
-	}
-
-	if best == 0 {
+func ChooseBestSum(maxDist, iterationsRemained int, ls []int) int {
+	// return immediatly
+	if len(ls) < iterationsRemained {
 		return -1
 	}
 
-	return best
-}
-
-func sumArr(arr []int) int {
-	sum := 0
-	for i := 0; i != len(arr); i++ {
-		sum += arr[i]
-	}
-	return sum
-}
-
-func getPermutations(iterationsRemained int, arr []int, accum *[][]int, path []int) {
-	// shouldn't never happen
+	// after that we will be are assured that len(ls) > 0
 	if iterationsRemained <= 0 {
-		return
+		return -1
 	}
 
-	// just appending array into accum
 	if iterationsRemained == 1 {
-		for i := 0; i != len(arr); i++ {
-			pathCopy := append(path[:0:0], path...)
-			*accum = append(*accum, append(pathCopy, arr[i]))
+		return bestNotGreaterThanN(maxDist, ls)
+	}
+
+	// all "good" combinations (that are <= maxDist) will be stored here
+	filteredResults := []int{}
+
+	for i := 0; i != len(ls); i++ {
+		for j := i + 1; j != len(ls); j++ {
+			best := ChooseBestSum(maxDist-ls[i], iterationsRemained-1, ls[j:])
+			if best != -1 {
+				filteredResults = append(filteredResults, best+ls[i])
+			}
 		}
 	}
 
-	// iterationsRemained > 1
-	if len(arr) == 0 {
-		return
-	}
+	return bestNotGreaterThanN(maxDist, filteredResults)
+}
 
-	// iterationsRemained > 1
-	// len(arr) > 0
+func bestNotGreaterThanN(n int, arr []int) int {
+	best := -1
 	for i := 0; i < len(arr); i++ {
-		for j := i + 1; j < len(arr); j++ {
-			pathCopy := append(path[:0:0], path...)
-			getPermutations(iterationsRemained-1, arr[j:], accum, append(pathCopy, arr[i]))
+		if arr[i] > best && arr[i] <= n {
+			best = arr[i]
 		}
 	}
+	return best
 }
