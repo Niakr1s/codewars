@@ -2,33 +2,30 @@ package besttravel
 
 // ChooseBestSum solves Best Travel 5 kyu cata
 func ChooseBestSum(maxDist, iterationsRemained int, ls []int) int {
-	// return immediatly
+	// return immediatly, bad imput
+	if iterationsRemained == 0 {
+		return -1
+	}
+
+	// return immediatly, bad input
 	if len(ls) < iterationsRemained {
 		return -1
 	}
 
-	// after that we will be are assured that len(ls) > 0
-	if iterationsRemained <= 0 {
-		return -1
-	}
-
-	if iterationsRemained == 1 {
-		return bestNotGreaterThanN(maxDist, ls)
-	}
-
-	// all "good" combinations (that are <= maxDist) will be stored here
-	filteredResults := []int{}
-
-	for i := 0; i != len(ls); i++ {
-		for j := i + 1; j != len(ls); j++ {
-			best := ChooseBestSum(maxDist-ls[i], iterationsRemained-1, ls[j:])
-			if best != -1 {
-				filteredResults = append(filteredResults, best+ls[i])
+	best := -1
+	for i, d := range ls {
+		if iterationsRemained > 1 {
+			innerbest := ChooseBestSum(maxDist-d, iterationsRemained-1, ls[i+1:])
+			if innerbest < 0 {
+				continue
 			}
+			d += innerbest
+		}
+		if d > best && d <= maxDist {
+			best = d
 		}
 	}
-
-	return bestNotGreaterThanN(maxDist, filteredResults)
+	return best
 }
 
 func bestNotGreaterThanN(n int, arr []int) int {
