@@ -13,7 +13,9 @@ func TestChooseBestSum(t *testing.T) {
 		}
 	}
 
-	var ts = []int{50, 55, 56, 57, 58}
+	var ts = []int{0, 1, 2, 3}
+	dotest(20, 3, ts, 6)
+	ts = []int{50, 55, 56, 57, 58}
 	dotest(163, 3, ts, 163)
 	ts = []int{50}
 	dotest(163, 3, ts, -1)

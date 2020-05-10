@@ -1,56 +1,60 @@
 package besttravel
 
 // ChooseBestSum solves Best Travel 5 kyu cata
-func ChooseBestSum(maxDist, townsLeft int, ls []int) int {
-	return chooseBestSumWithAccum(maxDist, townsLeft, ls, 0)
-}
+func ChooseBestSum(maxDist, maxTowns int, ls []int) int {
+	permutations := make([][]int, 0)
+	getPermutations(maxTowns, ls, &permutations, []int{})
 
-func chooseBestSumWithAccum(maxDist, townsLeft int, ls []int, accum int) int {
-	if townsLeft <= 0 {
-		return accum
+	best := 0
+	for i := 0; i != len(permutations); i++ {
+		if len(permutations[i]) < maxTowns {
+			continue
+		}
+		if sum := sumArr(permutations[i]); sum > best && sum <= maxDist {
+			best = sum
+		}
 	}
-	if accum > maxDist {
+
+	if best == 0 {
 		return -1
 	}
 
-	bestSum := 0
-
-	for i := 0; i != len(ls); i++ {
-		lsWithTownRemoved := append(ls[:0:0], ls...)
-		lsWithTownRemoved = deleteItem(i, lsWithTownRemoved[:])
-
-		best := chooseBestSumWithAccum(maxDist, townsLeft-1, lsWithTownRemoved, accum+ls[i])
-
-		if best > maxDist {
-			continue
-		}
-		if best > bestSum {
-			bestSum = best
-		}
-	}
-
-	if bestSum == 0 {
-		bestSum = -1
-	}
-
-	return bestSum
+	return best
 }
 
-func deleteItem(n int, arr []int) []int {
+func sumArr(arr []int) int {
+	sum := 0
+	for i := 0; i != len(arr); i++ {
+		sum += arr[i]
+	}
+	return sum
+}
+
+func getPermutations(iterationsRemained int, arr []int, accum *[][]int, path []int) {
+	// shouldn't never happen
+	if iterationsRemained <= 0 {
+		return
+	}
+
+	// just appending array into accum
+	if iterationsRemained == 1 {
+		for i := 0; i != len(arr); i++ {
+			pathCopy := append(path[:0:0], path...)
+			*accum = append(*accum, append(pathCopy, arr[i]))
+		}
+	}
+
+	// iterationsRemained > 1
 	if len(arr) == 0 {
-		return arr
+		return
 	}
-	if n < 0 || n >= len(arr) {
-		return arr
-	}
-	if len(arr) <= 1 {
-		return arr[:0]
-	}
-	if n == 0 {
-		return arr[1:]
-	} else if n == len(arr)-1 {
-		return arr[:len(arr)-1]
-	} else {
-		return append(arr[:n], arr[n+1:]...)
+
+	// iterationsRemained > 1
+	// len(arr) > 0
+	for i := 0; i < len(arr); i++ {
+		for j := i + 1; j < len(arr); j++ {
+			pathCopy := append(path[:0:0], path...)
+			getPermutations(iterationsRemained-1, arr[j:], accum, append(pathCopy, arr[i]))
+		}
 	}
 }
