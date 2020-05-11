@@ -1,8 +1,34 @@
 package twicelinear
 
-import (
-	"sort"
-)
+// DblLinear is a very clever Twice linear solution from internet
+// its faster then my previoius' commit solution by ~10 times
+func DblLinear(n int) int {
+	arr := []int{1}
+
+	yi := 0
+	zi := 0
+
+	for len(arr) <= n {
+		y := arr[yi]*2 + 1
+		z := arr[zi]*3 + 1
+
+		if y < z {
+			arr = append(arr, y)
+			yi++
+		} else if z < y {
+			arr = append(arr, z)
+			zi++
+		} else { // z == y
+			arr = append(arr, y)
+			yi++
+			zi++
+		}
+	}
+
+	return arr[n]
+}
+
+/*
 
 // DblLinear is my Twice linear solution
 func DblLinear(n int) int {
@@ -51,3 +77,5 @@ func appendIntoSorted(arr sort.IntSlice, n int) []int {
 
 	return arr
 }
+
+*/
