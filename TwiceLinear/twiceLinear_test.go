@@ -14,7 +14,7 @@ func TestDblLinear(t *testing.T) {
 		{100, 447},
 		{500, 3355},
 		{1000, 8488},
-		{100000, 289579},
+		{100000, 2911582},
 	}
 
 	for _, v := range testCases {

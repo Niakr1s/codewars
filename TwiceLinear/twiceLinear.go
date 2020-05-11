@@ -4,27 +4,28 @@ import (
 	"sort"
 )
 
+// DblLinear is my Twice linear solution
 func DblLinear(n int) int {
-	return dblLinearInner(n, newArr([]int{1}, map[int]bool{1: true}))
+	return dblLinearInner(n, []int{1})
 }
 
-func dblLinearInner(n int, a ArrWIthCache) int {
+func dblLinearInner(n int, arr sort.IntSlice) int {
 	if n == 0 {
-		return a.arr[0]
+		return arr[0]
 	}
 
-	y0 := y(a.arr[0])
-	z0 := z(a.arr[0])
+	y0 := y(arr[0])
+	z0 := z(arr[0])
 
 	// if y0 if in out of array - we got result!
-	if len(a.arr) > n+1 && y0 > a.arr[n] {
-		return a.arr[n]
+	if len(arr) > n+1 && y0 > arr[n] {
+		return arr[n]
 	}
 
-	a.AppendInSorted(y0)
-	a.AppendInSorted(z0)
+	arr = appendIntoSorted(arr, y0)
+	arr = appendIntoSorted(arr, z0)
 
-	return dblLinearInner(n-1, newArr(a.arr[1:], a.appended))
+	return dblLinearInner(n-1, arr[1:])
 }
 
 func y(x int) int {
@@ -35,32 +36,18 @@ func z(x int) int {
 	return 3*x + 1
 }
 
-type Arr []int
+func appendIntoSorted(arr sort.IntSlice, n int) []int {
+	idx := sort.SearchInts(arr, n)
 
-type ArrWIthCache struct {
-	arr      sort.IntSlice
-	appended map[int]bool
-}
-
-func newArr(a []int, app map[int]bool) ArrWIthCache {
-	return ArrWIthCache{
-		arr:      a,
-		appended: app,
+	// if n is already in arr
+	if idx != len(arr) && arr[idx] == n {
+		return arr
 	}
-}
 
-func (a *ArrWIthCache) AppendInSorted(n int) bool {
-	if _, ok := a.appended[n]; ok {
-		return false
-	}
-	a.appended[n] = true
+	arr = append(arr, 0) // make sure arr doesn't overflow while copying
+	copy(arr[idx+1:], arr[idx:])
 
-	idx := sort.SearchInts(a.arr, n)
+	arr[idx] = n
 
-	a.arr = append(a.arr, 0)
-	copy(a.arr[idx+1:], a.arr[idx:])
-
-	a.arr[idx] = n
-
-	return true
+	return arr
 }
