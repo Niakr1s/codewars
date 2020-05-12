@@ -2,15 +2,16 @@ package findthesmallest
 
 import (
 	"math"
+	"strconv"
 )
 
 // Smallest my implementation
 func Smallest(n int64) []int64 {
 	slicedN := int64ToSlice(n)
 
-	var res0 int64 = math.MaxInt64
-	res1 := math.MaxInt32
-	res2 := math.MaxInt32
+	var resValue int64 = math.MaxInt64
+	resFrom := math.MaxInt32
+	resTo := math.MaxInt32
 
 	for from := range slicedN {
 		for to := range slicedN {
@@ -22,26 +23,40 @@ func Smallest(n int64) []int64 {
 
 			got := sliceToInt64(arr)
 
-			if got < res0 {
-				// should update all in res
-				res0 = got
-				res1 = from
-				res2 = to
-			} else if got == res0 {
-				// updating only values at 1 and 2 indices
-				if from < res1 {
-					res1 = from
-					res2 = to
-				} else if from == res1 {
-					// updating value at 2 indice with smallest possible
-					if to < res2 {
-						res2 = to
-					}
-				}
+			if got < resValue {
+				resValue = got
+				resFrom = from
+				resTo = to
+			}
+			// if got == resValue is unneeded
+			// because we will get more bad result
+		}
+	}
+	return []int64{resValue, int64(resFrom), int64(resTo)}
+}
+
+// Smallest2 if from internet
+// My variant is 2 times faster than this xD
+func Smallest2(n int64) []int64 {
+	tmp := n
+	s := strconv.FormatInt(n, 10)
+	var res = []int64{-1, 0, 0}
+	for i, _ := range s {
+		c := string(s[i])
+		str1 := s[:i] + s[i+1:]
+		for j, _ := range s {
+			str2 := str1[:j] + c + str1[j:]
+			nbStr2, _ := strconv.ParseInt(str2, 10, 64)
+			if nbStr2 < tmp {
+				tmp = nbStr2
+				res = []int64{nbStr2, int64(i), int64(j)}
 			}
 		}
 	}
-	return []int64{res0, int64(res1), int64(res2)}
+	if res[0] == -1 {
+		res = []int64{n, 0, 0}
+	}
+	return res
 }
 
 // make sure n < m
@@ -50,22 +65,14 @@ func move(arr []int, from, to int) []int {
 		return arr
 	}
 
-	// saving value
 	fromVal := arr[from]
 
-	if from > to {
-		// moving from right to left...
-		for i := from; i > to; i-- {
-			arr[i] = arr[i-1]
-		}
-	} else {
-		// moving from left to right...
-		for i := from; i < to; i++ {
-			arr[i] = arr[i+1]
-		}
-	}
+	// ejecting from
+	copy(arr[from:], arr[from+1:])
 
-	// assigning saved value
+	// making space for to
+	copy(arr[to+1:], arr[to:])
+
 	arr[to] = fromVal
 
 	return arr

@@ -28,8 +28,8 @@ func TestSmallest(t *testing.T) {
 func TestExchange(t *testing.T) {
 	testCases := []struct {
 		arr      []int
-		i        int
-		j        int
+		from     int
+		to       int
 		expected []int
 	}{
 		{[]int{0, 1, 2, 3, 4, 5}, 3, 1, []int{0, 3, 1, 2, 4, 5}},
@@ -37,9 +37,11 @@ func TestExchange(t *testing.T) {
 	}
 
 	for _, testCase := range testCases {
-		got := move(testCase.arr, testCase.i, testCase.j)
+		got := move(testCase.arr, testCase.from, testCase.to)
 		if !reflect.DeepEqual(got, testCase.expected) {
-			t.Errorf("TestExchange: expected: %v, got: %v", testCase.expected, got)
+			t.Errorf("TestExchange: got %v (%d => %d), expected: %v, got: %v",
+				testCase.arr, testCase.from, testCase.to,
+				testCase.expected, got)
 		}
 	}
 }
@@ -60,5 +62,17 @@ func TestSliceToInt64(t *testing.T) {
 		if got != testCase.expected {
 			t.Errorf("TestSliceToInt64: expected: %v, got: %v", testCase.expected, got)
 		}
+	}
+}
+
+func BenchmarkSmallest(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Smallest(5275027536092356050)
+	}
+}
+
+func BenchmarkSmallest2(b *testing.B) {
+	for i := 0; i < b.N; i++ {
+		Smallest2(5275027536092356050)
 	}
 }
