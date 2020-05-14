@@ -1,5 +1,41 @@
 package d2f
 
+import (
+	"strconv"
+	"strings"
+)
+
+// FactString2Dec2 is solution from internet
+func FactString2Dec2(str string) int {
+	response := 0
+	step := len(str)
+	iter := 0
+
+	for step > 0 {
+		rest, _ := strconv.ParseInt(string(str[iter]), 16, 10)
+		response = response*step + int(rest)
+		step--
+		iter++
+	}
+
+	return response
+}
+
+// Dec2FactString2 is solution from internet
+func Dec2FactString2(nb int) string {
+	var response string
+
+	step := 1
+	remainder := 0
+	for nb > 0 {
+		nb, remainder = nb/step, nb%step
+		response = strconv.FormatInt(int64(remainder), 16) + response
+		step++
+	}
+
+	return strings.ToUpper(response)
+}
+
 // Dec2FactString from Decimal to Factorial and Back cata
 func Dec2FactString(nb int) string {
 	return translateArrToString(dec2FactSlice(nb))

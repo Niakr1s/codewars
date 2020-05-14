@@ -5,6 +5,30 @@ import (
 	"testing"
 )
 
+func BenchmarkFactString2Dec(b *testing.B) {
+	for i := 0; i != b.N; i++ {
+		FactString2Dec("A0000000000")
+	}
+}
+
+func BenchmarkDec2FactString(b *testing.B) {
+	for i := 0; i != b.N; i++ {
+		Dec2FactString(36288000)
+	}
+}
+
+func BenchmarkFactString2Dec2(b *testing.B) {
+	for i := 0; i != b.N; i++ {
+		FactString2Dec2("A0000000000")
+	}
+}
+
+func BenchmarkDec2FactString2(b *testing.B) {
+	for i := 0; i != b.N; i++ {
+		Dec2FactString2(36288000)
+	}
+}
+
 func TestDec2FactString(t *testing.T) {
 	testCases := []struct {
 		input    int
