@@ -1,5 +1,12 @@
 package d2f
 
+// F is global cached factorial
+var F CachedFactorial
+
+func init() {
+	F = NewCachedFactorial()
+}
+
 // CachedFactorial computes factorial and holds cache for faster execution
 type CachedFactorial struct {
 	cache map[int]int64
