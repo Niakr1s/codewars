@@ -1,13 +1,18 @@
 package d2f
 
-import "testing"
+import (
+	"reflect"
+	"testing"
+)
 
 func TestDec2FactString(t *testing.T) {
 	testCases := []struct {
 		input    int
 		expected string
 	}{
+		{463, "341010"},
 		{2982, "4041000"},
+		{2990, "4042100"},
 		{36288000, "A0000000000"},
 	}
 
@@ -26,12 +31,34 @@ func TestFactString2Dec(t *testing.T) {
 		expected int
 	}{
 		{"341010", 463},
+		{"4041000", 2982},
 		{"4042100", 2990},
+		{"A0000000000", 36288000},
 	}
 
 	for _, testCase := range testCases {
 		got := FactString2Dec(testCase.input)
 		if got != testCase.expected {
+			t.Errorf("Input: %v, expected: %v, got %v",
+				testCase.input, testCase.expected, got)
+		}
+	}
+}
+
+func TestDec2FactSlice(t *testing.T) {
+	testCases := []struct {
+		input    int
+		expected []int
+	}{
+		{463, []int{3, 4, 1, 0, 1, 0}},
+		{2982, []int{4, 0, 4, 1, 0, 0, 0}},
+		{2990, []int{4, 0, 4, 2, 1, 0, 0}},
+		{36288000, []int{10, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},
+	}
+
+	for _, testCase := range testCases {
+		got := dec2FactSlice(testCase.input)
+		if !reflect.DeepEqual(got, testCase.expected) {
 			t.Errorf("Input: %v, expected: %v, got %v",
 				testCase.input, testCase.expected, got)
 		}
