@@ -1,11 +1,13 @@
 package d2f
 
-import "testing"
+import (
+	"testing"
+)
 
 func TestFactorial(t *testing.T) {
 	testCases := []struct {
 		input    int
-		expected int
+		expected int64
 	}{
 		{0, 0},
 		{1, 1},

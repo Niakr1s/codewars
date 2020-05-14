@@ -1,16 +1,16 @@
 package d2f
 
 // CachedFactorial computes factorial and holds cache for faster execution
-type CachedFactorial struct{
-	cache map[int]int
+type CachedFactorial struct {
+	cache map[int]int64
 }
 
 // NewCachedFactorial constructs Factorial
-func NewCachedFactorial() CachedFactorial{
-	return CachedFactorial{cache: make(map[int]int)}
+func NewCachedFactorial() CachedFactorial {
+	return CachedFactorial{cache: make(map[int]int64)}
 }
 
-func (f *CachedFactorial) compute(n int) int {
+func (f *CachedFactorial) compute(n int) int64 {
 	if res, ok := f.cache[n]; ok {
 		return res
 	}
@@ -19,12 +19,16 @@ func (f *CachedFactorial) compute(n int) int {
 		return 0
 	}
 
-	if n == 1 {
-		return 1
-	}
+	var res int64 = 1
 
-	res := n * f.compute(n-1)
-	f.cache[n] = res
+	for i := 1; i <= n; i++ {
+		if v, ok := f.cache[i]; ok {
+			res = v
+			continue
+		}
+		res *= int64(i)
+		f.cache[i] = res
+	}
 
 	return res
 }
