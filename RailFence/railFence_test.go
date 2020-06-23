@@ -1,6 +1,7 @@
 package railfence
 
 import (
+	"reflect"
 	"testing"
 )
 
@@ -42,6 +43,28 @@ func TestDecode(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := Decode(tt.args.s, tt.args.n); got != tt.want {
 				t.Errorf("Decode() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_decodeToSlice(t *testing.T) {
+	type args struct {
+		s string
+		n int
+	}
+	tests := []struct {
+		name string
+		args args
+		want []string
+	}{
+		{"1", args{"WECRLTEERDSOEEFEAOCAIVDEN", 3},
+			[]string{"WECRLTE", "ERDSOEEFEAOC", "AIVDEN"}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := decodeToSlice(tt.args.s, tt.args.n); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("decodeToSlice() = %v, want %v", got, tt.want)
 			}
 		})
 	}
